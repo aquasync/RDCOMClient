@@ -26,9 +26,9 @@ AsBstr(const char *str)
     return(NULL);
 
   int size = strlen(str);
-  int wideSize = 2 * size;
+  int wideSize = MultiByteToWideChar(CP_UTF8, 0, str, -1, NULL, 0);
   LPOLESTR wstr = (LPWSTR) S_alloc(wideSize, sizeof(OLECHAR)); 
-  if(MultiByteToWideChar(CP_ACP, 0, str, size, wstr, wideSize) == 0 && str[0]) {
+  if(MultiByteToWideChar(CP_UTF8, 0, str, size, wstr, wideSize) == 0 && str[0]) {
     PROBLEM "Can't create BSTR for '%s'", str
     ERROR;
   }
@@ -47,15 +47,14 @@ FromBstr(BSTR str)
   if(!str)
     return(NULL);
 
-  len = wcslen(str);
+  len = WideCharToMultiByte(CP_UTF8, 0, str, -1, NULL, 0, NULL, NULL);
 
   if(len < 1)
     len = 0;
 
-  ptr = (char *) S_alloc(len+1, sizeof(char));
-  ptr[len] = '\0';
+  ptr = (char *) S_alloc(len, sizeof(char));
   if(len > 0) {
-    DWORD ok = WideCharToMultiByte(CP_ACP, 0, str, len, ptr, len, NULL, NULL);
+    DWORD ok = WideCharToMultiByte(CP_UTF8, 0, str, -1, ptr, len, NULL, NULL);
     if(ok == 0) 
       ptr = NULL;
   }
@@ -841,7 +840,7 @@ R_create2DArray(SEXP obj)
           el = &integer;
 	  break;
         case STRSXP:
-	  bstr = AsBstr(CHAR(STRING_ELT(obj, ctr)));
+	  bstr = AsBstr(translateCharUTF8(STRING_ELT(obj, ctr)));
           el = (void*) bstr;
 	  break;
         default:

@@ -1,4 +1,8 @@
 
+??
+
++ Support unicode strings by converting to/from UTF8-encoded strings in R.
+
 0.96-1
 
 + Removed the check in [[<- to see if the property is read-only. Have to handle case where there are two property elements in the type library with the same name (e.g., Visible) with a PROPERTYGET and PROPERTYPUT.

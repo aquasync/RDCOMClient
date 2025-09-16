@@ -482,13 +482,13 @@ checkErrorInfo(IUnknown *obj, HRESULT status, SEXP *serr)
 
    PROTECT(tmp = NEW_CHARACTER(1));
    errorInfo->GetSource(&ostr);
-   SET_STRING_ELT(tmp, 0, COPY_TO_USER_STRING(FromBstr(ostr)));
+   SET_STRING_ELT(tmp, 0, mkCharCE(FromBstr(ostr), CE_UTF8));
    SET_SLOT(ans, Rf_install("source"), tmp);
    UNPROTECT(1);
 
    PROTECT(tmp = NEW_CHARACTER(1));
    errorInfo->GetDescription(&ostr);
-   SET_STRING_ELT(tmp, 0, COPY_TO_USER_STRING(str = FromBstr(ostr)));
+   SET_STRING_ELT(tmp, 0, mkCharCE(str = FromBstr(ostr), CE_UTF8));
    SET_SLOT(ans, Rf_install("description"), tmp);
    UNPROTECT(1);
 
